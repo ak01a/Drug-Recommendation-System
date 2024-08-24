@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Health Care Center</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+
+    <style>
+        .logo {
+            width: 50px;
+            height: 50px;
+            color: black;
+            margin-top: 0;
+            margin-left: 2px;
+        }
+
+        .myimg {
+            width: 50px;
+            height: 50px;
+            border: 2px solid black;
+            border-radius: 25px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <!-- Logo at the top-left corner -->
+        <!--
+        <div class="logo">
+            <img class="myimg" src="{{ url_for('static', filename='img.png') }}" alt="">
+        </div>
+    -->
+        <a class="navbar-brand mx-auto" href="#">Drug Recommendation System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!--
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">H-ome</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact</a>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="/developer">Developer</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/blog">Blog</a>
+                </li>
+                 -->
+            </ul>
+
+            <!--
+            <form class="d-flex" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            -->
+        </div>
+    </div>
+</nav>
+
+<!-- main form of page -->
+<h1 class="mt-4 my-4 text-center text-green">Health Care Center</h1>
+<div class="container my-4 mt-4" style="background: black; color: white; border-radius: 15px; padding: 40px;">
+    <form action="/predict" method="post">
+        <div class="form-group">
+            <label for="symptoms">Select Symptoms:</label>
+            <input type="text" class="form-control" id="symptoms" name="symptoms" placeholder="type systems such as itching, sleeping, aching etc">
+        </div>
+        <!--
+        <br>
+        <button type="button" id="startSpeechRecognition" class="btn btn-primary" style="margin-left:3px;border:1px solid white; border-radius:20px;">
+            Start Speech Recognition
+        </button>
+        <br>
+    -->
+
+        <!-- Display the transcribed text here -->
+
+        <div name="mysysms" id="transcription"></div>
+
+        {% if message %}
+        <p>{{ message }}</p>
+        {% endif %}
+        <br>
+
+        <!--
+        <style>
+            .form-group {
+                margin-bottom: 25px; /* Add space below the text box and button */
+            }
+        </style>-->
+        <button type="submit" class="btn btn-danger btn-lg" style="width: 100%; padding: 14px; margin-bottom: 5px;">Predict</button>
+
+    </form>
+</div>
+
+<!-- Results -->
+<h1 class="text-center my-4 mt-4">Results</h1>
+<div class="container"  style="width: 100%;">
+    <div class="result-container d-flex justify-content-center">
+        <!-- Button to toggle display -->
+        <button class="toggle-button" data-bs-toggle="modal" data-bs-target="#resultsModal" style="
+                align-items: center;
+                background-color: #c2fbd7;
+                border-radius: 100px;
+                box-shadow: rgba(44, 187, 99, .2) 0 -25px 18px -14px inset,rgba(44, 187, 99, .15) 0 1px 2px,rgba(44, 187, 99, .15) 0 2px 4px,rgba(44, 187, 99, .15) 0 4px 8px,rgba(44, 187, 99, .15) 0 8px 16px,rgba(44, 187, 99, .15) 0 16px 32px;
+                color: green;
+                cursor: pointer;
+                display: inline-block;
+                font-family: CerebriSans-Regular,-apple-system,system-ui,Roboto,sans-serif;
+                padding: 17px 35px;
+                margin-right: 30px;
+                margin-left: 30px;
+                text-align: center;
+                text-decoration: none;
+                transition: all 250ms;
+                border: 0;
+                font-size: 16px;
+                user-select: none;
+                -webkit-user-select: none;
+                touch-action: manipulation;
+                ">Show Predictions</button>
+    </div>
+</div>
+
+<!-- Results Modal -->
+<div class="modal fade" id="resultsModal" tabindex="-1" aria-labelledby="resultsModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-header" style="background-color: #020606; color:white;">
+                <h5 class="modal-title" id="resultsModalLabel">Predictions</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color: white; border-radius: 0 0 15px 15px;">
+                <!-- Display predictions here -->
+                <h1>Prediction Results</h1>
+    {% if predictions %}
+        <div>
+            {% for prediction in predictions %}
+                <div style="margin-bottom: 20px; padding: 10px; border: 1px solid #ccc;">
+                    <h2>Model: {{ prediction.Model }}</h2>
+                    <p><strong>Predicted Disease:</strong> {{ prediction['Predicted Disease'] }}</p>
+                    <p><strong>Description:</strong> {{ prediction.Description }}</p>
+                    <p><strong>Precautions:</strong></p>
+                    <ul>
+                        {% for precaution in prediction.Precautions %}
+                            <li>{{ precaution }}</li>
+                        {% endfor %}
+                    </ul>
+                    <p><strong>Medications:</strong></p>
+                    <ul>
+                        {% for medication in prediction.Medications %}
+                            <li>{{ medication }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No predictions to display.</p>
+    {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const startSpeechRecognitionButton = document.getElementById('startSpeechRecognition');
+    const transcriptionDiv = document.getElementById('transcription');
+
+    startSpeechRecognitionButton.addEventListener('click', startSpeechRecognition);
+
+    function startSpeechRecognition() {
+        const recognition = new webkitSpeechRecognition(); // Use webkitSpeechRecognition for compatibility
+
+        recognition.lang = 'en-US'; // Set the language for recognition
+
+        recognition.onresult = function (event) {
+            const result = event.results[0][0].transcript;
+            transcriptionDiv.textContent = result;
+        };
+
+        recognition.onend = function () {
+            console.log('Speech recognition ended.');
+        };
+
+        recognition.start();
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+</body>
+</html>
